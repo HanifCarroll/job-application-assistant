@@ -1,7 +1,7 @@
 [project]
-name = "job-application-draft-assistant"
+name = "job-application-assistant"
 version = "0.1.0"
-description = "Local job application draft assistant with auditable Codex-backed drafts."
+description = "Local job application assistant with auditable Codex-backed drafts."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-jada = "job_application_draft_assistant.cli:app"
+jaa = "job_application_assistant.cli:app"
 
 [dependency-groups]
 dev = [

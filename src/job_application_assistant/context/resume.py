@@ -4,7 +4,7 @@ from pathlib import Path
 
 from pypdf import PdfReader
 
-from job_application_draft_assistant.models import ResumeContext
+from job_application_assistant.models import ResumeContext
 
 
 def extract_resume_context(resume_pdf_path: Path) -> ResumeContext:

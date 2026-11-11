@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from job_application_draft_assistant.applications.store import ApplicationStore, normalize_source_url
-from job_application_draft_assistant.models import ApplicationLogRequest, OpportunitySnapshot
+from job_application_assistant.applications.store import ApplicationStore, normalize_source_url
+from job_application_assistant.models import ApplicationLogRequest, OpportunitySnapshot
 
 
 def test_normalize_source_url_removes_fragment_and_trailing_slash() -> None:

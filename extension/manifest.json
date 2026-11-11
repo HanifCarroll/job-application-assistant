@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Job Application Draft Assistant",
+  "name": "Job Application Assistant",
   "version": "0.1.0",
   "description": "Extract job context and draft auditable applications through a local Python/Codex backend.",
   "action": {

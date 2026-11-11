@@ -19,6 +19,7 @@ def test_draft_panel_html_loads_renamed_orchestrator_and_ui_modules() -> None:
         assert 'src="ui/content_scripts.js"' in html
         assert 'src="ui/draft_form.js"' in html
         assert 'src="ui/application_status.js"' in html
+        assert 'src="ui/application_count.js"' in html
         assert 'src="ui/pdf_controls.js"' in html
         assert 'src="ui/posting_picker.js"' in html
         assert 'src="draft_panel.js"' in html
@@ -99,12 +100,25 @@ def test_draft_panel_wires_application_logging_and_pdf_modules() -> None:
     popup_html = read("popup.html")
     draft_panel = read("draft_panel.js")
     app_status = read("ui/application_status.js")
+    app_count = read("ui/application_count.js")
     pdf_controls = read("ui/pdf_controls.js")
     background = read("background.js")
 
     assert 'id="mark-applied"' in popup_html
+    for field_id in ["application-count", "application-count-value", "application-count-label", "application-count-status", "application-count-days"]:
+        assert f'id="{field_id}"' in popup_html
     assert "LOG_APPLICATION" in draft_panel
+    assert "JobApplicationCount.create" in draft_panel
+    assert "applicationCount.initialize()" in draft_panel
+    assert "await applicationCount.refresh()" in draft_panel
     assert 'detected_by: "manual"' in app_status
+    assert "APPLICATION_SUMMARY" in app_count
+    assert "jobApplicationAppliedCountDays" in app_count
+    assert "jobApplicationLedgerUpdatedAt" in app_count
+    assert "let hasRenderedSummary = false" in app_count
+    assert "if (!hasRenderedSummary)" in app_count
+    assert "hasRenderedSummary = true" in app_count
+    assert "window.setInterval" in app_count
     assert "JobApplicationStatusUi.buildApplicationLogRequest" in draft_panel
     assert "JobApplicationStatusUi.setAppliedIndicator" in draft_panel
     assert "Already in application ledger." in draft_panel
@@ -118,6 +132,9 @@ def test_draft_panel_wires_application_logging_and_pdf_modules() -> None:
     assert "START_PDF_EXPORT" in pdf_controls
     assert "START_PDF_EXPORT" in background
     assert "DOWNLOAD_PDF" in background
+    assert "APPLICATION_SUMMARY" in background
+    assert "/applications/summary?days=" in background
+    assert "APPLICATION_LEDGER_UPDATED_KEY" in background
     assert "function downloadPdf" in background
     assert "arrayBufferToBase64" in background
     assert "pdf_status" in draft_panel

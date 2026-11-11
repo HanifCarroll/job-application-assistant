@@ -423,8 +423,7 @@
 
   function markSubmittedIfSuccess() {
     if (!isSuccessStep()) return false;
-    setRunStatus("Application submitted.", { busy: false, label: "Regenerate PDF", status: "submitted" });
-    updateRun({ submitted_at: nowIso() });
+    coverLetterRuns?.remove?.(runId()).catch(() => {});
     return true;
   }
 

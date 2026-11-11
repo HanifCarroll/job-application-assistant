@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from job_application_draft_assistant.codex_provider import CodexProviderError, _parse_json_message, _safe_process_error
+from job_application_assistant.codex_provider import CodexProviderError, _parse_json_message, _safe_process_error
 
 
 def test_safe_process_error_extracts_message_without_prompt_text() -> None:

@@ -256,6 +256,15 @@ class ApplicationLookupResponse(BaseModel):
     application: ApplicationRecord | None = None
 
 
+class ApplicationSummaryResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    days: int
+    count: int
+    start_date: str
+    end_date: str
+
+
 class StageTiming(BaseModel):
     started_at: str
     finished_at: str | None = None

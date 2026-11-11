@@ -7,7 +7,7 @@ from uuid import uuid4
 
 from pydantic import BaseModel
 
-from job_application_draft_assistant.models import (
+from job_application_assistant.models import (
     CodexRunTiming,
     DraftJobCreated,
     DraftJobStage,

@@ -4,6 +4,7 @@ const DRAFT_STATE_KEY = "jobApplicationDraftState";
 const APPLICATION_QUEUE_KEY = "jobApplicationLogQueue";
 const APPLICATION_PENDING_KEY = "jobApplicationPendingApplication";
 const APPLICATION_LAST_KEY = "jobApplicationLastLogged";
+const APPLICATION_LEDGER_UPDATED_KEY = "jobApplicationLedgerUpdatedAt";
 const POSTING_SIDE_PANEL_PATH = "sidepanel.html";
 const DRAFT_SIDE_PANEL_PATH = "draft_sidepanel.html";
 
@@ -79,7 +80,7 @@ function enableSidePanelActionClick() {
 function userErrorMessage(error) {
   const message = error?.message || String(error);
   if (message === "Failed to fetch" || message.includes("Load failed") || message.includes("NetworkError")) {
-    return "Backend offline. Start it with: uv --no-config run jada serve";
+    return "Backend offline. Start it with: uv --no-config run jaa serve";
   }
   return message;
 }
@@ -170,6 +171,15 @@ async function lookupApplication(sourceUrl) {
   return response.json();
 }
 
+async function applicationSummary(days) {
+  const apiBase = await backendUrl();
+  const response = await fetch(`${apiBase}/applications/summary?days=${encodeURIComponent(String(days || 1))}`);
+  if (!response.ok) {
+    throw new Error(await responseErrorMessage(response));
+  }
+  return response.json();
+}
+
 async function lookupDraft(sourceUrl) {
   const apiBase = await backendUrl();
   const response = await fetch(`${apiBase}/drafts/lookup?source_url=${encodeURIComponent(sourceUrl || "")}`);
@@ -243,6 +253,9 @@ async function flushQueuedApplicationLogs() {
     }
   }
   await chrome.storage.local.set({ [APPLICATION_QUEUE_KEY]: remaining });
+  if (flushed > 0) {
+    await chrome.storage.local.set({ [APPLICATION_LEDGER_UPDATED_KEY]: nowIso() });
+  }
   return { ok: remaining.length === 0, flushed, remaining: remaining.length };
 }
 
@@ -250,7 +263,10 @@ async function logApplication(request) {
   await flushQueuedApplicationLogs();
   try {
     const application = await postApplicationLog(request);
-    await chrome.storage.local.set({ [APPLICATION_LAST_KEY]: application });
+    await chrome.storage.local.set({
+      [APPLICATION_LAST_KEY]: application,
+      [APPLICATION_LEDGER_UPDATED_KEY]: nowIso(),
+    });
     return { ok: true, queued: false, application };
   } catch (error) {
     const message = userErrorMessage(error);
@@ -439,6 +455,13 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
   if (message?.type === "LOOKUP_APPLICATION") {
     lookupApplication(message.source_url)
+      .then((response) => sendResponse({ ok: true, ...response }))
+      .catch((error) => sendResponse({ ok: false, error: userErrorMessage(error) }));
+    return true;
+  }
+
+  if (message?.type === "APPLICATION_SUMMARY") {
+    applicationSummary(message.days)
       .then((response) => sendResponse({ ok: true, ...response }))
       .catch((error) => sendResponse({ ok: false, error: userErrorMessage(error) }));
     return true;

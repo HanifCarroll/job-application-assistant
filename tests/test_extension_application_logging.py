@@ -33,10 +33,8 @@ def test_application_logger_loads_after_ledger_badge_and_uses_shared_dice_captur
     assert "diceOpportunity.detailOpportunity" in logger
     assert "diceOpportunity.wizardPageOpportunity" in logger
     assert "function updateCoverLetterRunConfirmed" in logger
-    assert "coverLetterRuns.upsert(jobId" in logger
-    assert 'message: response?.queued ? "Application submitted. Log queued." : "Application submitted."' in logger
+    assert "coverLetterRuns.remove(jobId)" in logger
     assert 'setFreshLedgerBadge(response.application, "Submission recorded", sourceUrl)' in logger
-    assert 'status: "submitted"' in logger
     assert "function jobPostingJsonLd" not in logger
     assert 'script[type="application/ld+json"]' not in logger
     assert "function setLedgerBadge" not in logger
@@ -52,8 +50,9 @@ def test_application_logger_detects_submit_and_confirmation_contracts() -> None:
     assert "chrome.tabs.remove(tabId)" in background
     assert "message.close_tab && _sender.tab?.id" in background
     assert "LOOKUP_APPLICATION" in background
-    assert "Backend offline. Start it with: uv --no-config run jada serve" in background
+    assert "Backend offline. Start it with: uv --no-config run jaa serve" in background
     assert "APPLICATION_QUEUE_KEY" in background
+    assert "APPLICATION_LEDGER_UPDATED_KEY" in background
     assert "/applications" in background
     assert "/applications/lookup" in background
     assert "message.opportunity || pending?.opportunity" in background

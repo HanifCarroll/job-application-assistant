@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Job Application Draft Assistant</title>
+    <title>Job Application Assistant</title>
     <link rel="stylesheet" href="popup.css" />
     <link rel="stylesheet" href="sidepanel.css" />
   </head>
@@ -11,7 +11,7 @@
     <main class="shell sidepanel-shell">
       <header class="topbar">
         <div>
-          <h1>Job application draft</h1>
+          <h1>Job application assistant</h1>
           <p id="status">Waiting for job context.</p>
         </div>
         <div class="topbar-actions">
@@ -29,6 +29,18 @@
           <span id="elapsed">0s</span>
         </div>
       </div>
+
+      <section id="application-count" class="application-count">
+        <div>
+          <strong id="application-count-value">-</strong>
+          <span id="application-count-label">applied today</span>
+          <p id="application-count-status" class="meta-status">Updating...</p>
+        </div>
+        <label>
+          Days
+          <input id="application-count-days" type="number" min="1" max="3650" step="1" value="1" />
+        </label>
+      </section>
 
       <section id="posting-picker" class="posting-picker" hidden>
         <div class="posting-picker-header">
@@ -173,6 +185,7 @@
     <script src="ui/content_scripts.js"></script>
     <script src="ui/draft_form.js"></script>
     <script src="ui/application_status.js"></script>
+    <script src="ui/application_count.js"></script>
     <script src="ui/pdf_controls.js"></script>
     <script src="ui/posting_picker.js"></script>
     <script src="draft_panel.js"></script>

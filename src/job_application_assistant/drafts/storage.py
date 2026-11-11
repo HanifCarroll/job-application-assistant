@@ -5,7 +5,7 @@ import sqlite3
 
 from pydantic import ValidationError
 
-from job_application_draft_assistant.models import DraftRequest, DraftResponse, DraftResult, StoredDraft
+from job_application_assistant.models import DraftRequest, DraftResponse, DraftResult, StoredDraft
 
 
 EXPECTED_DRAFT_COLUMNS = {"id", "created_at", "request_json", "draft_json"}

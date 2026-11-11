@@ -8,8 +8,8 @@ import subprocess
 from time import perf_counter
 from uuid import uuid4
 
-from job_application_draft_assistant.config import AppPaths
-from job_application_draft_assistant.models import CodexRunTiming
+from job_application_assistant.config import AppPaths
+from job_application_assistant.models import CodexRunTiming
 
 
 class CodexProviderError(RuntimeError):

@@ -7,14 +7,14 @@ import sys
 import typer
 import uvicorn
 
-from job_application_draft_assistant.applications.importer import import_applications_csv
-from job_application_draft_assistant.applications.store import ApplicationStore
-from job_application_draft_assistant.config import DEFAULT_PORTFOLIO_ROOT, AppPaths
-from job_application_draft_assistant.context.indexer import build_context
-from job_application_draft_assistant.models import ApplicationRecord
+from job_application_assistant.applications.importer import import_applications_csv
+from job_application_assistant.applications.store import ApplicationStore
+from job_application_assistant.config import DEFAULT_PORTFOLIO_ROOT, AppPaths
+from job_application_assistant.context.indexer import build_context
+from job_application_assistant.models import ApplicationRecord
 
 
-app = typer.Typer(help="Local job application draft assistant.")
+app = typer.Typer(help="Local job application assistant.")
 applications_app = typer.Typer(help="Import, list, and export logged applications.")
 app.add_typer(applications_app, name="applications")
 
@@ -33,7 +33,7 @@ def reindex(
 
 @app.command()
 def serve(host: str = "127.0.0.1", port: int = 8787) -> None:
-    uvicorn.run("job_application_draft_assistant.api:create_app", factory=True, host=host, port=port)
+    uvicorn.run("job_application_assistant.api:create_app", factory=True, host=host, port=port)
 
 
 @applications_app.command("import")

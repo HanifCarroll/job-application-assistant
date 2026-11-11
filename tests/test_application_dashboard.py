@@ -2,13 +2,14 @@ from __future__ import annotations
 
 from datetime import date
 
-from job_application_draft_assistant.applications.dashboard import (
+from job_application_assistant.applications.dashboard import (
+    count_sent_in_past_days,
     filter_application_records,
     paginate_application_records,
     render_application_dashboard,
     sort_application_records,
 )
-from job_application_draft_assistant.models import ApplicationDetectedBy, ApplicationRecord, OpportunitySnapshot
+from job_application_assistant.models import ApplicationDetectedBy, ApplicationRecord, OpportunitySnapshot
 
 
 def test_filter_application_records_searches_core_fields() -> None:
@@ -42,6 +43,24 @@ def test_filter_application_records_can_show_only_sent_yesterday() -> None:
     )
 
     assert filter_application_records([today, yesterday], sent="yesterday", today=date(2026, 6, 20)) == [yesterday]
+
+
+def test_count_sent_in_past_days_uses_inclusive_local_date_window() -> None:
+    today = application_record(source="dice", title="Today Role", company="Acme", applied_at="2026-06-20T12:00:00+00:00")
+    recent = application_record(
+        source="indeed",
+        title="Recent Role",
+        company="Globex",
+        applied_at="2026-06-18T12:00:00+00:00",
+    )
+    old = application_record(
+        source="linkedin",
+        title="Old Role",
+        company="Umbrella",
+        applied_at="2026-06-17T12:00:00+00:00",
+    )
+
+    assert count_sent_in_past_days([today, recent, old], days=3, today=date(2026, 6, 20)) == 2
 
 
 def test_sort_application_records_sorts_before_display_limit() -> None:

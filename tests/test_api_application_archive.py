@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from job_application_draft_assistant.api import _archive_cover_letter_for_application
-from job_application_draft_assistant.applications.store import ApplicationStore
-from job_application_draft_assistant.config import AppPaths
-from job_application_draft_assistant.drafts.pdf_export import cover_letter_pdf_path
-from job_application_draft_assistant.drafts.storage import DraftStore, make_stored_draft
-from job_application_draft_assistant.models import ApplicationLogRequest, DraftRequest, OpportunitySnapshot
+from job_application_assistant.api import _archive_cover_letter_for_application
+from job_application_assistant.applications.store import ApplicationStore
+from job_application_assistant.config import AppPaths
+from job_application_assistant.drafts.pdf_export import cover_letter_pdf_path
+from job_application_assistant.drafts.storage import DraftStore, make_stored_draft
+from job_application_assistant.models import ApplicationLogRequest, DraftRequest, OpportunitySnapshot
 
 
 def test_archive_cover_letter_for_application_moves_pdf_for_record_draft(tmp_path: Path) -> None:

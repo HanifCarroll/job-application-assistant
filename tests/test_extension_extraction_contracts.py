@@ -78,7 +78,7 @@ def test_extraction_modules_keep_weak_inference_patterns_out() -> None:
 
     for forbidden in [
         "leg" + "acy",
-        "JOB_APPLICATION_DRAFT_EXTRACT",
+        "JOB_APPLICATION_ASSISTANT_EXTRACT",
         "UPWORK" + "_PROPOSAL_EXTRACT",
         "TECH_SKILLS",
         "Just not interested",

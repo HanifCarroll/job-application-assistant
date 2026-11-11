@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from job_application_draft_assistant.drafts.view import render_draft_view
-from job_application_draft_assistant.models import DraftResponse
+from job_application_assistant.drafts.view import render_draft_view
+from job_application_assistant.models import DraftResponse
 
 
 def test_render_draft_view_shows_readable_draft_and_links() -> None:

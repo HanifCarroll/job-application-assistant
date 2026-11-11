@@ -17,6 +17,11 @@ const els = {
   appliedIndicator: document.querySelector("#applied-indicator"),
   appliedSummary: document.querySelector("#applied-summary"),
   applicationsDashboardLink: document.querySelector("#applications-dashboard-link"),
+  applicationCount: document.querySelector("#application-count"),
+  applicationCountValue: document.querySelector("#application-count-value"),
+  applicationCountLabel: document.querySelector("#application-count-label"),
+  applicationCountStatus: document.querySelector("#application-count-status"),
+  applicationCountDays: document.querySelector("#application-count-days"),
   source: document.querySelector("#source"),
   sourceUrl: document.querySelector("#source-url"),
   title: document.querySelector("#title"),
@@ -271,6 +276,7 @@ const postingPicker = globalThis.JobApplicationPostingPicker.create({
   setStatus,
   sleep,
 });
+const applicationCount = globalThis.JobApplicationCount.create({ els });
 
 async function extractProject() {
   const tab = await activeTab();
@@ -619,6 +625,7 @@ els.markApplied.addEventListener("click", async () => {
     if (response.application) {
       setAppliedIndicator(response.application);
     }
+    await applicationCount.refresh();
     await patchDraftState({
       application: response.application || currentState?.application || null,
       application_status: applicationStatus,
@@ -737,6 +744,7 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 
 async function initializePopup() {
   try {
+    applicationCount.initialize().catch(() => {});
     setStatus("Reading active page...");
     await refreshPostingPicker().catch(() => clearPostingPicker());
     const opportunity = await extractProject();

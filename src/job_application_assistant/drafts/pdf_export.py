@@ -16,7 +16,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.platypus import HRFlowable, Indenter, Paragraph, SimpleDocTemplate, Spacer
 
-from job_application_draft_assistant.models import PdfExportResponse, StoredDraft
+from job_application_assistant.models import PdfExportResponse, StoredDraft
 
 
 STANDARD_SIGNOFF = "Best,\nHanif Carroll"

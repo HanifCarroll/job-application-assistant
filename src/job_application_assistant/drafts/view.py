@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from html import escape
 
-from job_application_draft_assistant.models import DraftResponse
+from job_application_assistant.models import DraftResponse
 
 
 def render_draft_view(draft: DraftResponse) -> str:

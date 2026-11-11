@@ -4,10 +4,10 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 import logging
 
-from job_application_draft_assistant.codex_provider import CodexProvider
-from job_application_draft_assistant.drafts.pipeline import run_draft_pipeline
-from job_application_draft_assistant.drafts.job_store import DraftJobRecord, DraftJobStore
-from job_application_draft_assistant.models import (
+from job_application_assistant.codex_provider import CodexProvider
+from job_application_assistant.drafts.pipeline import run_draft_pipeline
+from job_application_assistant.drafts.job_store import DraftJobRecord, DraftJobStore
+from job_application_assistant.models import (
     CodexRunTiming,
     ContextBundle,
     DraftJobCreated,
@@ -16,7 +16,7 @@ from job_application_draft_assistant.models import (
     DraftRequest,
     StageTiming,
 )
-from job_application_draft_assistant.drafts.storage import DraftStore
+from job_application_assistant.drafts.storage import DraftStore
 
 
 logger = logging.getLogger(__name__)

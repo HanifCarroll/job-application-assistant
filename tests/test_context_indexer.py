@@ -6,7 +6,7 @@ from pathlib import Path
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen.canvas import Canvas
 
-from job_application_draft_assistant.context.indexer import build_context, load_context
+from job_application_assistant.context.indexer import build_context, load_context
 
 
 def test_build_context_indexes_portfolio_projects(tmp_path: Path) -> None:

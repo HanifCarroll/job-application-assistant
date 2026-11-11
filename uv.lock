@@ -696,7 +696,7 @@ wheels = [
 ]
 
 [[package]]
-name = "job-application-draft-assistant"
+name = "job-application-assistant"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

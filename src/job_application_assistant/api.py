@@ -1,24 +1,27 @@
 from __future__ import annotations
 
+from datetime import datetime, timedelta
+
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 
-from job_application_draft_assistant.applications.dashboard import (
+from job_application_assistant.applications.dashboard import (
+    count_sent_in_past_days,
     count_sent_today,
     filter_application_records,
     paginate_application_records,
     render_application_dashboard,
     sort_application_records,
 )
-from job_application_draft_assistant.applications.store import ApplicationStore, ApplicationStoreValidationError, normalize_source_url
-from job_application_draft_assistant.codex_provider import CodexProvider, CodexProviderError
-from job_application_draft_assistant.config import AppPaths
-from job_application_draft_assistant.context.indexer import build_context, ensure_context
-from job_application_draft_assistant.drafts.pipeline import run_draft_pipeline
-from job_application_draft_assistant.drafts.job_store import DraftJobStore
-from job_application_draft_assistant.drafts.jobs import DraftJobRunner, build_job_status
-from job_application_draft_assistant.models import (
+from job_application_assistant.applications.store import ApplicationStore, ApplicationStoreValidationError, normalize_source_url
+from job_application_assistant.codex_provider import CodexProvider, CodexProviderError
+from job_application_assistant.config import AppPaths
+from job_application_assistant.context.indexer import build_context, ensure_context
+from job_application_assistant.drafts.pipeline import run_draft_pipeline
+from job_application_assistant.drafts.job_store import DraftJobStore
+from job_application_assistant.drafts.jobs import DraftJobRunner, build_job_status
+from job_application_assistant.models import (
     DraftJobCreated,
     DraftJobStatus,
     DraftLookupResponse,
@@ -27,19 +30,20 @@ from job_application_draft_assistant.models import (
     ApplicationLookupResponse,
     ApplicationLogRequest,
     ApplicationRecord,
+    ApplicationSummaryResponse,
     PdfExportResponse,
     ReindexResponse,
     RevealPdfResponse,
     StoredDraft,
 )
-from job_application_draft_assistant.drafts.pdf_export import (
+from job_application_assistant.drafts.pdf_export import (
     PdfExportError,
     archive_cover_letter_pdf,
     export_cover_letter_pdf,
     reveal_pdf,
 )
-from job_application_draft_assistant.drafts.storage import DraftStore, DraftStoreValidationError
-from job_application_draft_assistant.drafts.view import render_draft_view
+from job_application_assistant.drafts.storage import DraftStore, DraftStoreValidationError
+from job_application_assistant.drafts.view import render_draft_view
 
 
 def create_app() -> FastAPI:
@@ -62,7 +66,7 @@ def create_app() -> FastAPI:
         max_workers=paths.max_workers,
     )
 
-    app = FastAPI(title="Job Application Draft Assistant", version="0.1.0")
+    app = FastAPI(title="Job Application Assistant", version="0.1.0")
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -176,6 +180,21 @@ def create_app() -> FastAPI:
             return application_store.list(limit=limit, source=source)
         except ApplicationStoreValidationError as exc:
             raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+    @app.get("/applications/summary")
+    def application_summary(days: int = Query(1, ge=1, le=3650)) -> ApplicationSummaryResponse:
+        try:
+            records = application_store.list(limit=0)
+        except ApplicationStoreValidationError as exc:
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
+        end_date = datetime.now().astimezone().date()
+        start_date = end_date - timedelta(days=days - 1)
+        return ApplicationSummaryResponse(
+            days=days,
+            count=count_sent_in_past_days(records, days=days, today=end_date),
+            start_date=start_date.isoformat(),
+            end_date=end_date.isoformat(),
+        )
 
     @app.get("/draft-jobs/{job_id}")
     def get_draft_job(job_id: str) -> DraftJobStatus:

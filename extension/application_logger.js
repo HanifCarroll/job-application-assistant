@@ -261,20 +261,10 @@
     return "";
   }
 
-  function updateCoverLetterRunConfirmed(rule, opportunity, response) {
+  function updateCoverLetterRunConfirmed(rule) {
     const jobId = coverLetterRunId(rule);
-    if (!jobId || !coverLetterRuns?.upsert) return;
-    coverLetterRuns.upsert(jobId, {
-      application_id: response?.application?.id || "",
-      busy: false,
-      company: opportunity?.company || "",
-      message: response?.queued ? "Application submitted. Log queued." : "Application submitted.",
-      primary_label: "Regenerate PDF",
-      source_url: opportunity?.source_url || "",
-      status: "submitted",
-      submitted_at: new Date().toISOString(),
-      title: opportunity?.title || "",
-    }).catch(() => {});
+    if (!jobId || !coverLetterRuns?.remove) return;
+    coverLetterRuns.remove(jobId).catch(() => {});
   }
 
   async function lookupApplication(sourceUrl) {
@@ -354,7 +344,7 @@
           scheduleLedgerBadgeRefresh(500, { force: true });
           return;
         }
-        updateCoverLetterRunConfirmed(rule, opportunity, response);
+        updateCoverLetterRunConfirmed(rule);
         if (response.application) {
           setFreshLedgerBadge(response.application, "Submission recorded", sourceUrl);
           return;

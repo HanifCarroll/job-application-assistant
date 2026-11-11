@@ -6,8 +6,8 @@ from datetime import UTC, datetime, time
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from job_application_draft_assistant.applications.store import ApplicationStore
-from job_application_draft_assistant.models import ApplicationLogRequest, ApplicationRecord, OpportunitySnapshot
+from job_application_assistant.applications.store import ApplicationStore
+from job_application_assistant.models import ApplicationLogRequest, ApplicationRecord, OpportunitySnapshot
 
 
 CSV_COLUMNS = {"Role", "Company", "Link", "Date Sent"}

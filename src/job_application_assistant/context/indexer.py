@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from job_application_draft_assistant.context.resume import extract_resume_context
-from job_application_draft_assistant.models import ContextBundle, ContextProject, OfferAngle, ResumeContext
+from job_application_assistant.context.resume import extract_resume_context
+from job_application_assistant.models import ContextBundle, ContextProject, OfferAngle, ResumeContext
 
 
 DEFAULT_PROFILE_TEXT = """# Your Name
@@ -99,7 +99,7 @@ def load_context(context_dir: Path) -> ContextBundle:
     offers_path = context_dir / "offers.json"
     projects_path = context_dir / "projects.jsonl"
     if not profile_path.exists() or not resume_path.exists() or not offers_path.exists() or not projects_path.exists():
-        raise FileNotFoundError(f"Context files missing in {context_dir}. Run `jada reindex` first.")
+        raise FileNotFoundError(f"Context files missing in {context_dir}. Run `jaa reindex` first.")
 
     profile = profile_path.read_text(encoding="utf-8")
     resume = ResumeContext.model_validate(json.loads(resume_path.read_text(encoding="utf-8")))

@@ -7,15 +7,15 @@ from pypdf import PdfReader
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen.canvas import Canvas
 
-from job_application_draft_assistant.models import DraftRequest, OpportunitySnapshot
-from job_application_draft_assistant.drafts.pdf_export import (
+from job_application_assistant.models import DraftRequest, OpportunitySnapshot
+from job_application_assistant.drafts.pdf_export import (
     PdfExportError,
     archive_cover_letter_pdf,
     export_cover_letter_pdf,
     extract_resume_header,
     reveal_pdf,
 )
-from job_application_draft_assistant.drafts.storage import make_stored_draft
+from job_application_assistant.drafts.storage import make_stored_draft
 
 
 def test_resume_header_uses_resume_contact_line_without_phone(tmp_path: Path) -> None:

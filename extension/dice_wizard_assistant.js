@@ -344,8 +344,7 @@
 
   function markSubmittedIfSuccess() {
     if (!isDiceWizardSuccessStep()) return false;
-    setPanelStatus("Application submitted.", { busy: false, label: "Regenerate PDF", status: "submitted" });
-    updateRun({ submitted_at: nowIso() });
+    coverLetterRuns?.remove?.(jobApplicationId()).catch(() => {});
     return true;
   }
 

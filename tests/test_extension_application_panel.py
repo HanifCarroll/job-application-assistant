@@ -21,6 +21,7 @@ def test_application_side_panel_routes_action_and_reuses_posting_picker_module()
     sidepanel = read("sidepanel.js")
     sidepanel_css = read("sidepanel.css")
     cover_letter_runs = read("ui/cover_letter_runs.js")
+    application_count = read("ui/application_count.js")
     dice_wizard = read("dice_wizard_assistant.js")
     indeed_wizard = read("indeed_smartapply_assistant.js")
     draft_sidepanel_html = read("draft_sidepanel.html")
@@ -66,12 +67,16 @@ def test_application_side_panel_routes_action_and_reuses_posting_picker_module()
     assert "window.close()" in popup_router
 
     assert 'src="ui/content_scripts.js"' in sidepanel_html
+    assert 'src="ui/application_count.js"' in sidepanel_html
     assert 'src="ui/posting_picker.js"' in sidepanel_html
     assert 'src="ui/cover_letter_runs.js"' in sidepanel_html
     assert 'src="sidepanel.js"' in sidepanel_html
     assert 'id="cover-letter-runs"' in sidepanel_html
     assert 'id="cover-letter-list"' in sidepanel_html
+    assert 'id="application-count"' in sidepanel_html
+    assert 'id="application-count-days"' in sidepanel_html
     assert 'id="posting-picker-title"' in sidepanel_html
+    assert 'id="application-count"' in draft_sidepanel_html
     assert 'id="posting-picker-title"' in draft_sidepanel_html
     assert "sidepanel.css" in sidepanel_html
     assert 'src="draft_panel.js"' in draft_sidepanel_html
@@ -96,11 +101,15 @@ def test_application_side_panel_routes_action_and_reuses_posting_picker_module()
     assert "function reconcileCoverLetterRun" in sidepanel
     assert "function lookupApplicationForRun" in sidepanel
     assert "function ensureWizardAssistant" in sidepanel
+    assert "JobApplicationCount.create" in sidepanel
+    assert "applicationCount.initialize()" in sidepanel
+    assert "applicationCount.scheduleRefresh" in sidepanel
     assert "INDEED_SMARTAPPLY_SCRIPT_FILES" in sidepanel
     assert 'chrome.runtime.sendMessage({ type: "LOOKUP_APPLICATION", source_url: run.source_url })' in sidepanel
     assert 'const files = source === "indeed" ? INDEED_SMARTAPPLY_SCRIPT_FILES : DICE_WIZARD_SCRIPT_FILES' in sidepanel
     assert "await chrome.scripting.executeScript({ target: { tabId: tab.id }, files })" in sidepanel
-    assert 'status: "submitted"' in sidepanel
+    assert "await coverLetterRuns.remove(run.job_id)" in sidepanel
+    assert 'status: "submitted"' not in sidepanel
     assert "Waiting for the ${runSourceLabel(run)} application workflow." in sidepanel
     assert "Finder opened. Select the generated PDF in the application upload box." in sidepanel
     assert 'dismiss.dataset.action = "dismiss-cover-letter-run"' in sidepanel
@@ -117,6 +126,7 @@ def test_application_side_panel_routes_action_and_reuses_posting_picker_module()
     assert "align-content: start" in sidepanel_css
     assert "grid-auto-rows: max-content" in sidepanel_css
     assert ".cover-letter-runs" in sidepanel_css
+    assert ".application-count" in (REPO_ROOT / "extension" / "popup.css").read_text(encoding="utf-8")
     assert "find extension -name '*.js'" in check_script
     assert "document.title" not in sidepanel
     assert "innerText" not in sidepanel
@@ -126,6 +136,11 @@ def test_application_side_panel_routes_action_and_reuses_posting_picker_module()
     assert "jobApplicationDiceCoverLetterRuns" in cover_letter_runs
     assert "chrome.storage.local.set" in cover_letter_runs
     assert "globalThis.JobApplicationCoverLetterRuns" in cover_letter_runs
+    assert "globalThis.JobApplicationCount" in application_count
+    assert "APPLICATION_SUMMARY" in application_count
+    assert "jobApplicationAppliedCountDays" in application_count
+    assert "jobApplicationLedgerUpdatedAt" in application_count
+    assert "countLabel" in application_count
     assert "function runOrderKey" in cover_letter_runs
     assert "function compareRunsByStart" in cover_letter_runs
     assert 'run?.started_at || run?.updated_at || ""' in cover_letter_runs
@@ -138,7 +153,8 @@ def test_application_side_panel_routes_action_and_reuses_posting_picker_module()
     assert "function markSubmittedIfSuccess" in dice_wizard
     assert "function markManualQuestionsIfNeeded" in dice_wizard
     assert "function continueWizardAutomation" in dice_wizard
-    assert 'status: "submitted"' in dice_wizard
+    assert "coverLetterRuns?.remove?.(jobApplicationId())" in dice_wizard
+    assert 'status: "submitted"' not in dice_wizard
     assert 'status: "needs_attention"' in dice_wizard
     assert "Application questions need manual answers in this Dice tab." in dice_wizard
     assert "new DataTransfer()" in dice_wizard
@@ -159,7 +175,8 @@ def test_application_side_panel_routes_action_and_reuses_posting_picker_module()
     assert "function markManualQuestionsIfNeeded" in indeed_wizard
     assert "Application questions need manual answers in this Indeed tab." in indeed_wizard
     assert "Indeed submission needs manual attention: reCAPTCHA is blocking submission." in indeed_wizard
-    assert 'status: "submitted"' in indeed_wizard
+    assert "coverLetterRuns?.remove?.(runId())" in indeed_wizard
+    assert 'status: "submitted"' not in indeed_wizard
     assert 'status: "needs_attention"' in indeed_wizard
 
 

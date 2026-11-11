@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from job_application_draft_assistant.applications.importer import import_applications_csv, read_application_csv
-from job_application_draft_assistant.applications.store import ApplicationStore
+from job_application_assistant.applications.importer import import_applications_csv, read_application_csv
+from job_application_assistant.applications.store import ApplicationStore
 
 
 def test_read_application_csv_maps_numbers_export(tmp_path: Path) -> None:

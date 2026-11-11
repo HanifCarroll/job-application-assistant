@@ -7,8 +7,8 @@ from datetime import UTC, datetime
 from time import perf_counter
 from typing import Iterator
 
-from job_application_draft_assistant.codex_provider import CodexProvider
-from job_application_draft_assistant.models import (
+from job_application_assistant.codex_provider import CodexProvider
+from job_application_assistant.models import (
     CodexRunTiming,
     ContextBundle,
     DraftJobStage,
@@ -16,8 +16,8 @@ from job_application_draft_assistant.models import (
     StageTiming,
     StoredDraft,
 )
-from job_application_draft_assistant.drafts.prompts import build_draft_prompt
-from job_application_draft_assistant.drafts.storage import DraftStore, make_stored_draft
+from job_application_assistant.drafts.prompts import build_draft_prompt
+from job_application_assistant.drafts.storage import DraftStore, make_stored_draft
 
 
 StageCallback = Callable[[DraftJobStage], None]

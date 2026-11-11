@@ -4,10 +4,10 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import cast
 
-from job_application_draft_assistant.codex_provider import CodexProvider
-from job_application_draft_assistant.config import AppPaths
-from job_application_draft_assistant.drafts.pipeline import run_draft_pipeline
-from job_application_draft_assistant.models import (
+from job_application_assistant.codex_provider import CodexProvider
+from job_application_assistant.config import AppPaths
+from job_application_assistant.drafts.pipeline import run_draft_pipeline
+from job_application_assistant.models import (
     CodexRunTiming,
     ContextBundle,
     ContextProject,
@@ -15,7 +15,7 @@ from job_application_draft_assistant.models import (
     OfferAngle,
     OpportunitySnapshot,
 )
-from job_application_draft_assistant.drafts.storage import DraftStore
+from job_application_assistant.drafts.storage import DraftStore
 
 
 class FakeCodex:

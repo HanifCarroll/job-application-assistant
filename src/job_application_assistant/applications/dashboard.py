@@ -7,7 +7,7 @@ from html import escape
 from typing import Sequence
 from urllib.parse import urlencode
 
-from job_application_draft_assistant.models import ApplicationRecord
+from job_application_assistant.models import ApplicationRecord
 
 
 @dataclass(frozen=True)
@@ -52,8 +52,19 @@ def sort_application_records(
 
 
 def count_sent_today(records: Sequence[ApplicationRecord], *, today: date | None = None) -> int:
-    target_date = today or _local_today()
-    return sum(1 for record in records if _applied_local_date(record.applied_at) == target_date)
+    return count_sent_in_past_days(records, days=1, today=today)
+
+
+def count_sent_in_past_days(records: Sequence[ApplicationRecord], *, days: int, today: date | None = None) -> int:
+    safe_days = max(days, 1)
+    end_date = today or _local_today()
+    start_date = end_date - timedelta(days=safe_days - 1)
+    return sum(
+        1
+        for record in records
+        if (applied_date := _applied_local_date(record.applied_at)) is not None
+        and start_date <= applied_date <= end_date
+    )
 
 
 def paginate_application_records(

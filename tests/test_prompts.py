@@ -3,8 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from job_application_draft_assistant.models import ContextBundle, DraftRequest, OpportunitySnapshot, ResumeContext
-from job_application_draft_assistant.drafts.prompts import build_draft_prompt
+from job_application_assistant.models import ContextBundle, DraftRequest, OpportunitySnapshot, ResumeContext
+from job_application_assistant.drafts.prompts import build_draft_prompt
 
 
 SECTION_HEADINGS = {

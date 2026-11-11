@@ -1,6 +1,11 @@
 const els = {
   status: document.querySelector("#status"),
   refresh: document.querySelector("#refresh"),
+  applicationCount: document.querySelector("#application-count"),
+  applicationCountValue: document.querySelector("#application-count-value"),
+  applicationCountLabel: document.querySelector("#application-count-label"),
+  applicationCountStatus: document.querySelector("#application-count-status"),
+  applicationCountDays: document.querySelector("#application-count-days"),
   postingPicker: document.querySelector("#posting-picker"),
   postingPickerTitle: document.querySelector("#posting-picker-title"),
   postingSummary: document.querySelector("#posting-summary"),
@@ -192,14 +197,7 @@ async function reconcileCoverLetterRun(run, tabs) {
 
   const application = await lookupApplicationForRun(run).catch(() => null);
   if (application) {
-    await coverLetterRuns.upsert(run.job_id, {
-      application_id: application.id || "",
-      busy: false,
-      message: "Application submitted.",
-      primary_label: "Regenerate PDF",
-      status: "submitted",
-      submitted_at: application.applied_at || new Date().toISOString(),
-    });
+    await coverLetterRuns.remove(run.job_id);
     return true;
   }
 
@@ -359,6 +357,7 @@ const postingPicker = globalThis.JobApplicationPostingPicker.create({
   setStatus,
   sleep,
 });
+const applicationCount = globalThis.JobApplicationCount.create({ els });
 
 function setBusy(isBusy) {
   els.refresh.disabled = isBusy;
@@ -392,6 +391,7 @@ els.coverLetterList.addEventListener("click", async (event) => {
       setStatus("Removed cover letter PDF run.");
     }
     await renderCoverLetterRuns({ reconcile: true });
+    applicationCount.scheduleRefresh();
   } catch (error) {
     await coverLetterRuns.upsert(jobId, {
       busy: false,
@@ -410,6 +410,7 @@ els.coverLetterList.addEventListener("click", async (event) => {
 els.refresh.addEventListener("click", async () => {
   try {
     setBusy(true);
+    applicationCount.scheduleRefresh(0);
     await renderCoverLetterRuns();
     const tab = await activeTab();
     if (!isPostingResultsUrl(tab.url || "")) {
@@ -432,6 +433,7 @@ els.refresh.addEventListener("click", async () => {
 async function initializeSidePanel() {
   try {
     setBusy(true);
+    applicationCount.initialize().catch(() => {});
     const runs = await renderCoverLetterRuns({ reconcile: true });
     const tab = await activeTab();
     if (!isPostingResultsUrl(tab.url || "")) {
@@ -456,6 +458,7 @@ initializeSidePanel();
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === "local" && changes[coverLetterRuns.key]) {
     renderCoverLetterRuns().catch((error) => setStatus(error.message, "error"));
+    applicationCount.scheduleRefresh();
   }
 });
 

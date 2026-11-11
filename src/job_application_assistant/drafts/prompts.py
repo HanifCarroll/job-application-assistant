@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from job_application_draft_assistant.models import ContextBundle, DraftRequest
+from job_application_assistant.models import ContextBundle, DraftRequest
 
 
 LANGUAGE_RULES = """Language rules:

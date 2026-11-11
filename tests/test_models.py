@@ -5,7 +5,7 @@ import json
 import pytest
 from pydantic import ValidationError
 
-from job_application_draft_assistant.models import DraftRequest, OpportunitySnapshot, UpworkProject
+from job_application_assistant.models import DraftRequest, OpportunitySnapshot, UpworkProject
 
 
 def test_opportunity_snapshot_discards_obsolete_freeform_fields() -> None:

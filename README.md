@@ -1,4 +1,4 @@
-# Job Application Draft Assistant
+# Job Application Assistant
 
 A local Chrome extension and Python backend for drafting auditable job applications with `codex exec`.
 
@@ -50,11 +50,11 @@ Chrome action side panel
 ## Quick Start
 
 ```bash
-git clone https://github.com/HanifCarroll/job-application-draft-assistant.git
-cd job-application-draft-assistant
+git clone https://github.com/HanifCarroll/job-application-assistant.git
+cd job-application-assistant
 uv sync
-uv run jada reindex
-uv run jada serve
+uv run jaa reindex
+uv run jaa serve
 ```
 
 Then load the Chrome extension:
@@ -96,25 +96,25 @@ Supported environment variables:
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `JOB_APPLICATION_DRAFT_PORTFOLIO_ROOT` | `examples/portfolio` | Source directory for profile, offers, and project proof points. |
-| `JOB_APPLICATION_DRAFT_CONTEXT_DIR` | `data/context` | Generated context cache. |
-| `JOB_APPLICATION_DRAFT_RUNTIME_DIR` | `.runtime` | Runtime directory for local backend artifacts. |
-| `JOB_APPLICATION_DRAFT_PDF_OUTPUT_DIR` | `.runtime/cover-letters` | Directory where generated cover letter PDFs are saved. |
-| `JOB_APPLICATION_DRAFT_PDF_ARCHIVE_DIR` | `.runtime/cover-letters/archive` | Directory where submitted cover letter PDFs are moved after the application is logged. |
-| `JOB_APPLICATION_DRAFT_RESUME_PDF_PATH` | `~/Library/Mobile Documents/com~apple~CloudDocs/Downloads/Hanif-Carroll-Resume.pdf` | Resume PDF indexed into draft context and used for cover letter letterhead data. Phone-like contact items are omitted from exports. |
-| `JOB_APPLICATION_DRAFT_DB_PATH` | `.runtime/drafts.db` | SQLite database path. |
-| `JOB_APPLICATION_DRAFT_CODEX_RUNS_DIR` | `.runtime/codex-runs` | Per-run Codex workspaces. |
-| `JOB_APPLICATION_DRAFT_CODEX_BINARY` | `codex` | Codex CLI executable. |
-| `JOB_APPLICATION_DRAFT_CODEX_MODEL` | `gpt-5.5` | Model passed explicitly to `codex exec`. |
-| `JOB_APPLICATION_DRAFT_CODEX_REASONING_EFFORT` | `low` | Reasoning effort passed explicitly to `codex exec`. |
-| `JOB_APPLICATION_DRAFT_CODEX_TIMEOUT_SECONDS` | `180` | Timeout per Codex pass. |
-| `JOB_APPLICATION_DRAFT_MAX_WORKERS` | `5` | Maximum concurrent async draft jobs. |
+| `JOB_APPLICATION_ASSISTANT_PORTFOLIO_ROOT` | `examples/portfolio` | Source directory for profile, offers, and project proof points. |
+| `JOB_APPLICATION_ASSISTANT_CONTEXT_DIR` | `data/context` | Generated context cache. |
+| `JOB_APPLICATION_ASSISTANT_RUNTIME_DIR` | `.runtime` | Runtime directory for local backend artifacts. |
+| `JOB_APPLICATION_ASSISTANT_PDF_OUTPUT_DIR` | `.runtime/cover-letters` | Directory where generated cover letter PDFs are saved. |
+| `JOB_APPLICATION_ASSISTANT_PDF_ARCHIVE_DIR` | `.runtime/cover-letters/archive` | Directory where submitted cover letter PDFs are moved after the application is logged. |
+| `JOB_APPLICATION_ASSISTANT_RESUME_PDF_PATH` | `~/Library/Mobile Documents/com~apple~CloudDocs/Downloads/Hanif-Carroll-Resume.pdf` | Resume PDF indexed into draft context and used for cover letter letterhead data. Phone-like contact items are omitted from exports. |
+| `JOB_APPLICATION_ASSISTANT_DB_PATH` | `.runtime/drafts.db` | SQLite database path. |
+| `JOB_APPLICATION_ASSISTANT_CODEX_RUNS_DIR` | `.runtime/codex-runs` | Per-run Codex workspaces. |
+| `JOB_APPLICATION_ASSISTANT_CODEX_BINARY` | `codex` | Codex CLI executable. |
+| `JOB_APPLICATION_ASSISTANT_CODEX_MODEL` | `gpt-5.5` | Model passed explicitly to `codex exec`. |
+| `JOB_APPLICATION_ASSISTANT_CODEX_REASONING_EFFORT` | `low` | Reasoning effort passed explicitly to `codex exec`. |
+| `JOB_APPLICATION_ASSISTANT_CODEX_TIMEOUT_SECONDS` | `180` | Timeout per Codex pass. |
+| `JOB_APPLICATION_ASSISTANT_MAX_WORKERS` | `5` | Maximum concurrent async draft jobs. |
 
 Example:
 
 ```bash
-JOB_APPLICATION_DRAFT_PORTFOLIO_ROOT=/path/to/my/context uv run jada reindex
-uv run jada serve
+JOB_APPLICATION_ASSISTANT_PORTFOLIO_ROOT=/path/to/my/context uv run jaa reindex
+uv run jaa serve
 ```
 
 ## Context Source Format
@@ -132,7 +132,7 @@ my-context/
 
 `profile.md` is freeform Markdown about your positioning and working style.
 
-Resume text is extracted from `JOB_APPLICATION_DRAFT_RESUME_PDF_PATH` during `jada reindex` and cached in `data/context/resume.json`. Missing or unreadable resume PDFs produce an explicit context warning instead of made-up resume details.
+Resume text is extracted from `JOB_APPLICATION_ASSISTANT_RESUME_PDF_PATH` during `jaa reindex` and cached in `data/context/resume.json`. Missing or unreadable resume PDFs produce an explicit context warning instead of made-up resume details.
 
 `offers.json` is an array of proposal angles:
 
@@ -170,7 +170,7 @@ Each project JSON should include proof points the proposal system is allowed to 
 The generated cache in `data/context` is intentionally ignored by Git. Rebuild it with:
 
 ```bash
-uv run jada reindex
+uv run jaa reindex
 ```
 
 The backend runs `codex exec` with `--ignore-user-config` and `--ignore-rules` so unrelated local MCP servers, plugins, hooks, or execpolicy files do not slow down or destabilize proposal generation. Model and reasoning effort are passed explicitly through the environment variables above.
@@ -229,14 +229,14 @@ Applications are stored in the same SQLite database as drafts. Rows are deduplic
 Import a Numbers-exported CSV with the columns `Role`, `Company`, `Link`, and `Date Sent`:
 
 ```bash
-uv run jada applications import "/path/to/Job Search.csv"
+uv run jaa applications import "/path/to/Job Search.csv"
 ```
 
 List or export the SQLite ledger:
 
 ```bash
-uv run jada applications list --limit 25
-uv run jada applications export --output applications.csv
+uv run jaa applications list --limit 25
+uv run jaa applications export --output applications.csv
 ```
 
 View the local dashboard while the backend is running:
@@ -251,13 +251,13 @@ The extension checks the current job source URL against `/applications/lookup`. 
 
 ## PDF Cover Letters
 
-PDF export is available for completed `cover_letter` drafts. The backend renders the saved `draft_text` without rewriting it, adds a restrained resume-derived letterhead, and saves the file under `JOB_APPLICATION_DRAFT_PDF_OUTPUT_DIR`.
+PDF export is available for completed `cover_letter` drafts. The backend renders the saved `draft_text` without rewriting it, adds a restrained resume-derived letterhead, and saves the file under `JOB_APPLICATION_ASSISTANT_PDF_OUTPUT_DIR`.
 
 Generated cover letter PDFs are named `Hanif-Carroll-Cover-Letter-{Company}.pdf`; the scraped role title remains available inside the letter context but is not included in the upload filename.
 
 The default resume source is the iCloud Downloads resume path shown in Configuration. Reindexing extracts the resume text into draft context; PDF export reads only the resume header/contact lines needed for letterhead and skips phone-like contact items.
 
-After an application is logged with an attached cover letter draft, the backend moves the already-generated PDF from `JOB_APPLICATION_DRAFT_PDF_OUTPUT_DIR` into `JOB_APPLICATION_DRAFT_PDF_ARCHIVE_DIR`. If no PDF was generated for that draft, application logging still succeeds and no archive file is created.
+After an application is logged with an attached cover letter draft, the backend moves the already-generated PDF from `JOB_APPLICATION_ASSISTANT_PDF_OUTPUT_DIR` into `JOB_APPLICATION_ASSISTANT_PDF_ARCHIVE_DIR`. If no PDF was generated for that draft, application logging still succeeds and no archive file is created.
 
 The draft side panel enables `Generate PDF` after a cover letter draft succeeds. PDF generation is started through the extension background service worker and persisted in `chrome.storage.local`, so closing the side panel does not own or clear the in-progress export state. After generation, `Finder` asks the local backend to reveal the generated PDF file. The backend only reveals files it generated under the configured PDF output directory.
 
